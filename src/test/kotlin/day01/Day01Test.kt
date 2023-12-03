@@ -3,12 +3,12 @@ package day01
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
-class Day01KtTest {
+class Day01Test {
 
     @Test
     fun day01Part1() {
         // test if implementation meets criteria from the description, like:
-        val testInput = Utils.readInput("Day01_test.txt")
+        val testInput = Utils.readInput("Day01_part1_test.input")
         assertEquals(142, Day01.part1(testInput))
     }
 
@@ -21,7 +21,7 @@ class Day01KtTest {
     @Test
     fun day01Part2() {
         // test if implementation meets criteria from the description, like:
-        val testInput = Utils.readInput("Day01_part2_test.txt")
+        val testInput = Utils.readInput("Day01_part2_test.input")
         assertEquals(281, Day01.part2(testInput))
     }
 }
