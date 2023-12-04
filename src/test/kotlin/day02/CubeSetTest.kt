@@ -2,6 +2,8 @@ package day02
 
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertTrue
+import kotlin.test.assertFalse
 
 class CubeSetTest {
     @Test
@@ -30,5 +32,35 @@ class CubeSetTest {
     fun fromStringWithNoColors() {
         val cubeSet = CubeSet.fromString("")
         assertEquals(CubeSet(blue = 0, green = 0, red = 0), cubeSet)
+    }
+
+    @Test
+    fun isValid() {
+        val bagSetup = CubeSet(blue = 10, green = 10, red = 10)
+        assertTrue(
+            CubeSet(blue = 1, green = 2, red = 0).isValid(bagSetup)
+        )
+        assertTrue(
+            CubeSet(blue = 10, green = 10, red = 10).isValid(bagSetup)
+        )
+
+        assertFalse(
+            CubeSet(blue = 1, green = 2, red = 20).isValid(bagSetup)
+        )
+        assertFalse(
+            CubeSet(blue = 1, green = 20, red = 0).isValid(bagSetup)
+        )
+        assertFalse(
+            CubeSet(blue = 20, green = 2, red = 0).isValid(bagSetup)
+        )
+        assertFalse(
+            CubeSet(blue = 11, green = 11, red = 10).isValid(bagSetup)
+        )
+        assertFalse(
+            CubeSet(blue = 10, green = 11, red = 11).isValid(bagSetup)
+        )
+        assertFalse(
+            CubeSet(blue = 11, green = 11, red = 11).isValid(bagSetup)
+        )
     }
 }
