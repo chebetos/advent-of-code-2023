@@ -1,8 +1,6 @@
 package day02
 
 import println
-import java.util.LinkedList
-import java.util.TreeMap
 
 fun main() {
     val day02Input = Utils.readInput("day02_input.txt")
@@ -20,20 +18,20 @@ object Day02 {
         .fromStringLines(bagSetup, lines)
         .sumOfValidGameIds()
 
-    fun part2(lines: List<String>): Int {
-        return 0
-    }
+    fun part2(lines: List<String>): Int = Games
+        .fromStringLines(CubeSet(), lines)
+        .sumOfPower()
 }
 
-data class CubeSet(val blue: Int = 0, val red: Int = 0, val green: Int = 0) {
+data class CubeSet(val red: Int = 0, val blue: Int = 0, val green: Int = 0) {
     /**
      * Is not valid if any of the cube amount is higher than the amount in the bag setup
      */
     fun isValid(bagSetup: CubeSet): Boolean {
-        if (this.blue > bagSetup.blue) {
+        if (this.red > bagSetup.red) {
             return false;
         }
-        if (this.red > bagSetup.red) {
+        if (this.blue > bagSetup.blue) {
             return false;
         }
         if (this.green > bagSetup.green) {
@@ -42,14 +40,16 @@ data class CubeSet(val blue: Int = 0, val red: Int = 0, val green: Int = 0) {
         return true
     }
 
+    fun power(): Int = (this.red * this.green * this.blue)
+
     companion object {
         fun fromString(cubeSetString: String): CubeSet {
             val cubeStrings = cubeSetString.split(',').map { it.trim() }
-            val blue: Int = extractColorValue(cubeStrings, "blue")
             val red: Int = extractColorValue(cubeStrings, "red")
+            val blue: Int = extractColorValue(cubeStrings, "blue")
             val green: Int = extractColorValue(cubeStrings, "green")
 
-            return CubeSet(blue = blue, red = red, green = green)
+            return CubeSet(red = red, blue = blue, green = green)
         }
 
         private fun extractColorValue(cubeStrings: List<String>, color: String): Int {
@@ -63,11 +63,19 @@ data class CubeSet(val blue: Int = 0, val red: Int = 0, val green: Int = 0) {
         }
     }
 }
-data class Game(val gameId: Int, val cubeSet: List<CubeSet>) {
+data class Game(val gameId: Int, val cubeSets: List<CubeSet>) {
     fun isAPossibleGame(bagSetup: CubeSet): Boolean {
         //is a possible game if all the cube sets are valid
-        return cubeSet.all { it.isValid(bagSetup) }
+        return cubeSets.all { it.isValid(bagSetup) }
     }
+
+    fun minimumSetOfCubes() = CubeSet(
+        red = cubeSets.maxOf { it.red },
+        blue = cubeSets.maxOf { it.blue },
+        green = cubeSets.maxOf { it.green },
+    )
+
+    fun power(): Int = this.minimumSetOfCubes().power()
 
     companion object {
         fun fromString(gameString: String): Game {
@@ -86,6 +94,8 @@ data class Games(val games: List<Game>, val bagSetup: CubeSet) {
     fun sumOfValidGameIds(): Int = games
         .filter { it.isAPossibleGame(this.bagSetup) }
         .sumOf { it.gameId }
+
+    fun sumOfPower(): Int = games.sumOf { it.power() }
 
     companion object {
         fun fromStringLines(bagSetup: CubeSet, gameStrings: List<String>): Games {

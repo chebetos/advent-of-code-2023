@@ -17,5 +17,7 @@ class Day02Test {
 
     @Test
     fun part2() {
+        val testInput = Utils.readInput("Day02_part2_test.input")
+        assertEquals(2286, day02.part2(testInput))
     }
 }

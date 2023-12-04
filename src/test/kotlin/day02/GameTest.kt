@@ -14,7 +14,7 @@ class GameTest {
         assertEquals(
             Game(
                 gameId = 1,
-                cubeSet = listOf(
+                cubeSets = listOf(
                     CubeSet(blue = 3, red = 4),
                     CubeSet(blue = 6, red = 1, green = 2),
                     CubeSet(green = 2),
@@ -30,7 +30,7 @@ class GameTest {
         assertTrue(
             Game(
                 gameId = 1,
-                cubeSet = listOf(
+                cubeSets = listOf(
                     CubeSet(blue = 3, red = 4),
                     CubeSet(blue = 6, red = 1, green = 2),
                     CubeSet(green = 2),
@@ -41,7 +41,7 @@ class GameTest {
         assertFalse(
             Game(
                 gameId = 1,
-                cubeSet = listOf(
+                cubeSets = listOf(
                     CubeSet(blue = 3, red = 4),
                     CubeSet(blue = 6, red = 1, green = 2),
                     CubeSet(green = 20),
