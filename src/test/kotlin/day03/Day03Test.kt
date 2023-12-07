@@ -14,6 +14,7 @@ class Day03Test {
 
     @Test
     fun part2() {
-        assertEquals(0, Day03.part2(listOf()))
+        val testInput = Utils.readInput("Day03_part1_test.input")
+        assertEquals(467835, Day03.part2(testInput))
     }
 }

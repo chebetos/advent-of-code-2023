@@ -12,9 +12,12 @@ fun main() {
     part2Result.println()
 }
 
+private const val gearSymbol = '*'
+
 object Day03 {
+    private val numbersRegex = Regex("\\d*")
+
     fun part1(lines: List<String>): Int {
-        val numbersRegex = Regex("\\d*")
 
         val sumOfNumbersAdjacentToSymbol = AtomicInteger(0)
         for (i in lines.indices) {
@@ -86,7 +89,59 @@ object Day03 {
 
     private fun isAValidSymbol(char: Char) = char != '.' && !char.isDigit()
 
-    fun part2(lines: List<String>): Int = lines.size
+    fun part2(lines: List<String>): Int {
+        val gearSymbolRegex = Regex("\\*")
+
+        val sumOfGearRatios = AtomicInteger(0)
+
+        for (i in lines.indices) {
+            val line = lines[i]
+            if (!line.contains(gearSymbol)) {
+                continue
+            }
+
+            val isFirstLine = 0 == i
+            val isLastLine = (lines.size -1) == i
+
+
+            val gearSymbolMatches = gearSymbolRegex.findAll(line)
+
+            val numbersInLine = numbersRegex.findAll(line).filter { it.value.isNotEmpty() }
+
+            val numbersInPreviousLine: Sequence<MatchResult> = if (!isFirstLine)
+                numbersRegex.findAll(lines[i-1]).filter { it.value.isNotEmpty() }
+            else
+                emptySequence()
+
+            val numbersInNextLine: Sequence<MatchResult> = if (!isLastLine)
+                numbersRegex.findAll(lines[i+1]).filter { it.value.isNotEmpty() }
+            else
+                emptySequence()
+
+            for (gearSymbolMatch in gearSymbolMatches) {
+                println("* in $i - ${gearSymbolMatch.range}")
+                val gearSymbolAdjacentRange = (gearSymbolMatch.range.first - 1)..(gearSymbolMatch.range.last + 1)
+                val adjacentNumbers: List<Int> =(
+                    numbersInPreviousLine.filter { rangesOverlap(gearSymbolAdjacentRange, it.range) }.map { it.value.toInt() } +
+                            numbersInLine.filter { rangesOverlap(gearSymbolAdjacentRange, it.range) }.map { it.value.toInt() } +
+                        numbersInNextLine.filter { rangesOverlap(gearSymbolAdjacentRange, it.range) }.map { it.value.toInt() }
+                ).toList()
+
+                println("adjacentNumbers:\t${adjacentNumbers}")
+                if (adjacentNumbers.size != 2) {
+                    continue
+                }
+                val gearRatio = adjacentNumbers[0] * adjacentNumbers[1]
+                sumOfGearRatios.addAndGet(gearRatio)
+            }
+        }
+
+        return sumOfGearRatios.get()
+    }
+    
+    fun rangesOverlap(range1: IntRange, range2: IntRange): Boolean {
+        return (range1.first <= range2.last) && (range1.last >= range2.first)
+    }
 }
 
 
