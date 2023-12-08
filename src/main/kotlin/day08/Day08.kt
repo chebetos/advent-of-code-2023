@@ -1,6 +1,8 @@
 package day08
 
 import println
+import java.time.Duration
+import java.time.Instant
 
 fun main() {
     val day01Input = Utils.readInput("day08_input.txt")
@@ -18,8 +20,9 @@ object Day08 {
         return network.navigate()
     }
 
-    fun part2(lines: List<String>): Int {
-        return lines.size
+    fun part2(lines: List<String>): Long {
+        val network = Network.fromString(lines)
+        return network.navigateFromNodesEndingWithA()
     }
 }
 
@@ -50,7 +53,7 @@ data class Network(
         var counter = 0
         var currentInstruction = 0
         var currentPos = "AAA"
-        while (!"ZZZ".equals(currentPos)) {
+        while ("ZZZ" != currentPos) {
             counter++
 
             val currentPositionNetworkElement = network.getValue(currentPos)
@@ -66,5 +69,53 @@ data class Network(
             }
         }
         return counter
+    }
+
+    fun navigateFromNodesEndingWithA(): Long {
+        var counter = 0L
+        var currentInstruction = 0
+
+        val nodesEndingWithA = network.keys.filter { it.endsWith('A') }
+        val nodesEndingWithZ = network.keys.filter { it.endsWith('Z') }
+
+        val currentPositions = nodesEndingWithA.toMutableList()
+        currentPositions.println()
+        nodesEndingWithZ.println()
+
+        val startingAt = Instant.now()
+        while (currentPositions.any { !it.endsWith('Z') }) {
+            counter++
+
+            val whereToGo = leftRightInstructions[currentInstruction]
+            val newPositions = currentPositions.map { makeMovement(it, whereToGo) }
+
+            for (i in currentPositions.indices) {
+                currentPositions[i] = newPositions[i]
+            }
+
+            currentInstruction++
+            if (leftRightInstructions.length == currentInstruction)  {
+                currentInstruction = 0
+            }
+            if (counter % 100_000_000L == 0L ||
+                currentPositions.count { it.endsWith('Z') } > 3) {
+                println("${Duration.between(startingAt, Instant.now())} - Iteration: $counter. Current positions: $currentPositions")
+
+            }
+        }
+        currentPositions.println()
+        println("${Duration.between(startingAt, Instant.now())} - Iteration: $counter. Current positions: $currentPositions")
+        return counter
+    }
+
+    private fun makeMovement(currentPosition: String, whereToGo: Char): String {
+        val currentPositionNetworkElement = network.getValue(currentPosition)
+        val nextPosition: String? = when (whereToGo) {
+            'L' -> currentPositionNetworkElement.first
+            'R' -> currentPositionNetworkElement.second
+            else -> null
+        }
+        checkNotNull(nextPosition) { "Invalid instruction where to go: $whereToGo" }
+        return nextPosition
     }
 }
