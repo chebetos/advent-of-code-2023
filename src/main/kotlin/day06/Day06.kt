@@ -20,7 +20,9 @@ object Day06 {
     }
 
     fun part2(lines: List<String>): Int {
-        return lines.size
+        val document = RacesDocument.fromStringWithoutSpaces(lines)
+        document.println()
+        return document.calculateMarginOfError()
     }
 }
 
@@ -47,11 +49,11 @@ data class RacesDocument(val races: List<Race>) {
             val times = filteredLines[0].removePrefix(TIME_PREFFIX)
                 .split(' ')
                 .filter { it.isNotBlank() }
-                .map { it.toInt() }
+                .map { it.toLong() }
             val distances = filteredLines[1].removePrefix(DISTANCE_PREFFIX)
                 .split(' ')
                 .filter { it.isNotBlank() }
-                .map { it.toInt() }
+                .map { it.toLong() }
 
             check(times.size == distances.size) { "Invalid input not same amount of time records than distance records: $times vs $distances"}
 
@@ -63,12 +65,28 @@ data class RacesDocument(val races: List<Race>) {
 
             return RacesDocument(races)
         }
+
+        fun fromStringWithoutSpaces(lines: List<String>): RacesDocument {
+            val filteredLines = lines.filter { it.isNotBlank() }
+            check(filteredLines.size == 2) { "Invalid input, it should be only 2 lines: $filteredLines"}
+            check(filteredLines[0].startsWith(TIME_PREFFIX)) { "Invalid input, 1st line doesn't start with 'Time': ${filteredLines[0]}"}
+            check(filteredLines[1].startsWith(DISTANCE_PREFFIX)) { "Invalid input, 2nd line doesn't start with 'Distance;: ${filteredLines[1]}"}
+
+            val time = filteredLines[0].removePrefix(TIME_PREFFIX)
+                .replace(" ", "")
+                .toLong()
+            val distance = filteredLines[1].removePrefix(DISTANCE_PREFFIX)
+                .replace(" ", "")
+                .toLong()
+
+            return RacesDocument(listOf(Race(time, distance)))
+        }
     }
 }
 
-data class Race(val time: Int, val distance: Int) {
-    fun calculateAchievableDistances(): List<Int> {
-        val achievableDistances: MutableList<Int> = ArrayList()
+data class Race(val time: Long, val distance: Long) {
+    fun calculateAchievableDistances(): List<Long> {
+        val achievableDistances: MutableList<Long> = ArrayList()
         for (i in 0..time) {
             val chargingTime = i
             val runningTime = time - i
@@ -82,7 +100,7 @@ data class Race(val time: Int, val distance: Int) {
     fun calculateWaysToWin(): Int {
         val achievableDistances = calculateAchievableDistances()
         val waysToWin = achievableDistances.indices.filter { achievableDistances[it] > distance }
-        println("For race: $this,\n\tachievableDistances: $achievableDistances,\n\twaysToWin: ${waysToWin.size} - $waysToWin")
+        //println("For race: $this,\n\tachievableDistances: $achievableDistances,\n\twaysToWin: ${waysToWin.size} - $waysToWin")
         return waysToWin.size
     }
 }
