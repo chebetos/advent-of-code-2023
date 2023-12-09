@@ -1,5 +1,6 @@
 package day08
 
+import Utils
 import println
 import java.time.Duration
 import java.time.Instant

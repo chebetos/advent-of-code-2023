@@ -1,5 +1,6 @@
 package day00
 
+import Utils
 import println
 
 fun main() {

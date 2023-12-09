@@ -1,6 +1,6 @@
 package day07
 
-import day01.Day01
+import Utils
 import kotlin.test.Test
 import kotlin.test.assertEquals
 

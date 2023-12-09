@@ -1,5 +1,6 @@
 package day01
 
+import Utils
 import println
 import java.util.concurrent.atomic.AtomicInteger
 
